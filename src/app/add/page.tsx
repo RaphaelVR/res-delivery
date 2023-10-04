@@ -4,6 +4,14 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import {v2 as cloudinary} from 'cloudinary';
+
+// cloudinary.config({ 
+//   cloud_name: 'raphaelvr', 
+//   api_key: 'process.env.CLOUDINARY_API_KEY', 
+//   api_secret: 'process.env.CLOUDINARY_API_SECRET' 
+// });
+
 
 
 type Inputs = {
@@ -69,17 +77,14 @@ const AddPage = () => {
     data.append("file", file!);
     data.append("upload_preset", "restaurant");
 
-//     const res = await fetch("https://api.cloudinary.com/v1_1/raphaelvr/image/upload", {
-//       method: "POST",
-//       headers: { "Content-Type": "multipart/form-data" ,
-//                  "mode": "no-cors",                 
-//                 //  "Access-Control-Allow-Origin": 'http://localhost:3000',
-//                 },
-//       body: data,
-//     });
+    const res = await fetch("https://api.cloudinary.com/v1_1/raphaelvr/image/upload", {
+      method: "POST",
+      headers: { "Content-Type": "multipart/form-data", "Access-Control-Allow-Origin": "*" },
+      body: data,
+    });
 
-//     const resData = await res.json();
-//     return resData.url;
+    const resData = await res.json();
+    return resData.url;
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -100,7 +105,7 @@ const AddPage = () => {
 
       router.push(`/product/${data.id}`);
     } catch (err) {
-      console.log(err); 
+      console.log(err);
     }
   };
 
@@ -110,7 +115,7 @@ const AddPage = () => {
         <h1 className="text-4xl mb-2 text-gray-300 font-bold">
           Add New Product
         </h1>
-        {/* <div className="w-full flex flex-col gap-2 ">
+        <div className="w-full flex flex-col gap-2 ">
           <label
             className="text-sm cursor-pointer flex gap-4 items-center"
             htmlFor="file"
@@ -124,7 +129,7 @@ const AddPage = () => {
             id="file"
             className="hidden"
           />
-        </div> */}
+        </div>
         <div className="w-full flex flex-col gap-2 ">
           <label className="text-sm">Title</label>
           <input
