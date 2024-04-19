@@ -1,14 +1,14 @@
 "use client";
 
 import {
+  CardElement,
   LinkAuthenticationElement,
   PaymentElement,
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
-// import AddressForm from "./AdressForm";
-
+import AddressForm from "./AddressForm";
 
 const CheckoutForm = () => {
   const stripe = useStripe();
@@ -61,20 +61,14 @@ const CheckoutForm = () => {
     setIsLoading(true);
 
     const { error } = await stripe.confirmPayment({
-      elements,
+      elements, 
       confirmParams: {
-        // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000/success",
+        return_url: "http://localhost:3000/success"
       },
     });
 
-    // This point will only be reached if there is an immediate error when
-    // confirming the payment. Otherwise, your customer will be redirected to
-    // your `return_url`. For some payment methods like iDEAL, your customer will
-    // be redirected to an intermediate site first to authorize the payment, then
-    // redirected to the `return_url`.
     if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message || "Something went wrong!");
+      setMessage(error.message || "Something went wrong.");
     } else {
       setMessage("An unexpected error occurred.");
     }
@@ -83,25 +77,28 @@ const CheckoutForm = () => {
   };
 
   return (
-    <form
-      id="payment-form"
+    <form 
+      id = "payment-form"
       onSubmit={handleSubmit}
       className="min-h-[calc(100vh-6rem)] md:min-h-[calc(100vh-15rem)] p-4 lg:px-20 xl:px-40 flex flex-col gap-8"
-    >
+    > 
       <LinkAuthenticationElement id="link-authentication-element" />
       <PaymentElement
         id="payment-element"
         options={{
           layout: "tabs",
-        }}
+         }}
       />
-      {/* <AddressForm /> */}
-      <button disabled={isLoading || !stripe || !elements} id="submit" className="bg-red-500 text-white p-4 rounded-md w-28">
+      <AddressForm />
+      <button
+        disabled = {isLoading || !stripe || !elements}
+        id="submit"
+        className="bg-red-500 text-white p-4 rounded-md w-28"
+      >
         <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
+         {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
         </span>
       </button>
-      {/* Show any error or success messages */}
       {message && <div id="payment-message">{message}</div>}
     </form>
   );
